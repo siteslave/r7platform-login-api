@@ -13,6 +13,7 @@ import loginSchema from '../schema/login';
 export default async (fastify: FastifyInstance) => {
 
   const loginModel = new LoginModel();
+  const postgrest = fastify.postgrest;
 
   fastify.post('/login', {
     config: {
@@ -30,16 +31,12 @@ export default async (fastify: FastifyInstance) => {
     try {
       const encPassword = crypto.createHash('md5').update(password).digest('hex')
      
-      const { data, error } = await fastify.postgrest
-        .from('users')
-        .select('id')
-        .eq('username', username)
-        .eq('password', encPassword);
+      const { data, error } = await loginModel.login(postgrest, username, encPassword)
       
       if (error) {
         reply
-          .status(StatusCodes.BAD_REQUEST)
-          .send(getReasonPhrase(StatusCodes.BAD_REQUEST))
+          .status(StatusCodes.BAD_GATEWAY)
+          .send(getReasonPhrase(StatusCodes.BAD_GATEWAY))
       } else {
         if (data.length > 0) {
           const user: any = data[0]
