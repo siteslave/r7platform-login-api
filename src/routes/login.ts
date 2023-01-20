@@ -8,6 +8,8 @@ import * as crypto from 'crypto'
 
 import { LoginModel } from '../models/login'
 
+import loginSchema from '../schema/login';
+
 export default async (fastify: FastifyInstance) => {
 
   const loginModel = new LoginModel();
@@ -19,7 +21,8 @@ export default async (fastify: FastifyInstance) => {
         max: 10,
         timeWindow: '1 minute'
       }
-    }
+    },
+    schema: loginSchema,
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     const body: any = request.body
     const username = body.username
