@@ -5,11 +5,9 @@ import {
 } from 'http-status-codes';
 
 import _ from 'lodash';
-
-import * as crypto from 'crypto'
+import crypto from 'crypto'
 
 import { LoginModel } from '../models/login'
-
 import loginSchema from '../schema/login';
 
 export default async (fastify: FastifyInstance) => {
