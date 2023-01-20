@@ -1,14 +1,14 @@
 {
-  "name": "fastify-ts-demo",
+  "name": "r7-login-api",
   "version": "1.0.0",
-  "description": "Fastify RESTful service",
+  "description": "R7 Login API Service",
   "scripts": {
     "build": "npx gulp",
     "start": "npx nodemon"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "GPLv3",
   "dependencies": {
     "@fastify/autoload": "^5.7.1",
     "@fastify/cors": "^8.2.0",
