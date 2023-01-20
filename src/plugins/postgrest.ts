@@ -12,7 +12,7 @@ module.exports = fp(async function (fastify: any, opts: any, next: any) {
     });
 
     fastify.decorate('postgrest', postgrest);
-    next();
+    // next();
   } catch (err: any) {
     next(err);
   }
