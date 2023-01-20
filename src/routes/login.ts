@@ -4,7 +4,7 @@ import {
   getReasonPhrase,
 } from 'http-status-codes';
 
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 import * as crypto from 'crypto'
 
