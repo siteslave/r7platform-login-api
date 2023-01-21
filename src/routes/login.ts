@@ -37,24 +37,18 @@ export default async (fastify: FastifyInstance) => {
         request.log.error(error);
         reply
           .status(StatusCodes.BAD_GATEWAY)
-          .send(getReasonPhrase(StatusCodes.BAD_GATEWAY))
+          .send({
+            code: error.code,
+            details: error.details,
+            message: error.message
+          })
       } else {
 
-        if (_.isEmpty(data)) {
-          reply
-            .status(StatusCodes.BAD_REQUEST)
-            .send({
-              code: StatusCodes.BAD_REQUEST,
-              error: "Invalid username or password"
-            });
-        } else {
-          const payload: any = { sub: data.id }
-          const token = fastify.jwt.sign(payload);
-          reply
-            .status(StatusCodes.OK)
-            .send({ access_token: token });
-        }
-
+        const payload: any = { sub: data.id }
+        const token = fastify.jwt.sign(payload);
+        reply
+          .status(StatusCodes.OK)
+          .send({ access_token: token });
       }
 
     } catch (error: any) {
