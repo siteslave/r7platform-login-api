@@ -6,7 +6,7 @@ module.exports = fp(async function (fastify: any, opts: any, next: any) {
   try {
     const postgrest = new PostgrestClient(opts.url, {
       headers: {
-        Prefer: 'tx=rollback',
+        // Prefer: 'tx=rollback',
         Authorization: 'Bearer ' + opts.key
       },
     });
