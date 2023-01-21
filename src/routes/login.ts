@@ -48,8 +48,7 @@ export default async (fastify: FastifyInstance) => {
               error: "Invalid username or password"
             });
         } else {
-          const user: any = data[0];
-          const payload: any = { sub: user.id }
+          const payload: any = { sub: data.id }
           const token = fastify.jwt.sign(payload);
           reply
             .status(StatusCodes.OK)

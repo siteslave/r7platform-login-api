@@ -8,7 +8,8 @@ export class LoginModel {
       .from('users')
       .select('id')
       .eq('username', username)
-      .eq('password', password);
+      .eq('password', password)
+      .single();
   }
 
 }
