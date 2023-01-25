@@ -1,4 +1,4 @@
-FROM node:19-alpine AS build
+FROM node:18-alpine AS build
 
 LABEL maintainer="Satit Rianpit <rianpit@gmail.com>"
 
@@ -33,7 +33,7 @@ RUN rm -rf node_modules/gulp && \
     rm -rf node_modules/nodemon &&\
     rm -rf node_modules/readable-stream
 
-FROM keymetrics/pm2:9-slim
+FROM keymetrics/pm2:18-slim
 
 ENV NODE_ENV === 'production'
 
