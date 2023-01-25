@@ -31,10 +31,24 @@ app.register(import('@fastify/rate-limit'), {
   timeWindow: '1 minute'
 })
 
-// PostgREST
-app.register(require('./plugins/postgrest'), {
-  url: process.env.PGRST_URL,
-  key: process.env.PGRST_KEY
+// Database
+app.register(require('./plugins/db'), {
+  options: {
+    client: 'pg',
+    connection: {
+      host: process.env.R7_LOGIN_DB_HOST || 'localhost',
+      user: process.env.R7_LOGIN_DB_USER || 'postgres',
+      port: Number(process.env.R7_LOGIN_DB_PORT) || 5432,
+      password: process.env.R7_LOGIN_DB_PASSWORD || '',
+      database: process.env.R7_LOGIN_DB_NAME || 'test',
+    },
+    searchPath: [process.env.R7_LOGIN_DB_SCHEMA || 'public'],
+    pool: {
+      min: 10,
+      max: 500
+    },
+    debug: process.env.R7_LOGIN_DB_DEBUG === "Y" ? true : false,
+  }
 })
 
 // JWT
@@ -59,4 +73,4 @@ app.register(autoload, {
   dir: path.join(__dirname, 'routes')
 })
 
-export default app;
+export default app

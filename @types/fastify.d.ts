@@ -1,11 +1,12 @@
 import * as jsonwebtoken from 'jsonwebtoken';
 import { AxiosInstance } from 'axios';
+import Knex from 'knex';
 
 declare module 'fastify' {
   interface FastifyInstance {
     jwt: jsonwebtoken
     authenticate: any
-    postgrest: any
+    db: Knex
   }
 
   interface FastifyRequest {
