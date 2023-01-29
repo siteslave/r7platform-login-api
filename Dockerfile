@@ -18,11 +18,13 @@ RUN apk update && \
   cp /usr/share/zoneinfo/Asia/Bangkok /etc/localtime && \
   echo "Asia/Bangkok" > /etc/timezone
 
+RUN wget -qO /bin/pnpm "https://github.com/pnpm/pnpm/releases/latest/download/pnpm-linuxstatic-x64" && chmod +x /bin/pnpm
+
 COPY . .
 
-RUN npm i && npm run build
+RUN pnpm i && pnpm run build
 
-RUN apk del make gcc g++ python
+RUN apk del make gcc g++ python3
 
 RUN rm -rf node_modules/gulp && \
     rm -rf node_modules/gulp-clean && \
