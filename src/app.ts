@@ -1,8 +1,6 @@
 import fastify from 'fastify'
-import path, { join } from 'path';
+import path from 'path';
 const autoload = require('@fastify/autoload')
-
-require('dotenv').config({ path: join(__dirname, '../config.conf') })
 
 const app = fastify({
   logger: {
@@ -53,7 +51,7 @@ app.register(require('./plugins/db'), {
 
 // JWT
 app.register(require('./plugins/jwt'), {
-  secret: process.env.PGRST_SECRET_KEY || '@1234567890@',
+  secret: process.env.R7_LOGIN_SECRET_KEY || '@1234567890@',
   sign: {
     iss: 'r7.moph.go.th',
     expiresIn: '10m'
