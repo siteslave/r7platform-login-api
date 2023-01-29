@@ -13,25 +13,23 @@ RUN apk update && \
   libtool \
   autoconf \
   automake \
-  g++ \
+  g++ gcc \
   make && \
   cp /usr/share/zoneinfo/Asia/Bangkok /etc/localtime && \
   echo "Asia/Bangkok" > /etc/timezone
 
-RUN wget -qO /bin/pnpm "https://github.com/pnpm/pnpm/releases/latest/download/pnpm-linuxstatic-x64" && chmod +x /bin/pnpm
-
 COPY . .
 
-RUN pnpm i && pnpm run build
+RUN npm i && \ && npm run build
+
+RUN apk del make gcc g++ python
 
 RUN rm -rf node_modules/gulp && \
     rm -rf node_modules/gulp-clean && \
     rm -rf node_modules/gulp-cli && \
-    rm -rf node_modules/gulp-sourcemaps && \
     rm -rf node_modules/gulp-typescript && \
     rm -rf node_modules/gulp-uglify && \
-    rm -rf node_modules/nodemon &&\
-    rm -rf node_modules/readable-stream
+    rm -rf node_modules/nodemon
 
 FROM keymetrics/pm2:18-slim
 

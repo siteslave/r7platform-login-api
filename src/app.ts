@@ -1,6 +1,8 @@
 import fastify from 'fastify'
-import path from 'path';
+import path from 'path'
 const autoload = require('@fastify/autoload')
+const crypto = require('crypto')
+
 
 const app = fastify({
   logger: {
@@ -66,6 +68,14 @@ app.register(require('./plugins/jwt'), {
   }
 })
 
+// hash password
+app.decorate('hashPassword', async (password: any) => {
+  const salt = process.env.R7PLATFORM_LOGIN_PASSWORD_SALT || 'gwuqpUkUm3jv07Ui0TCqZoZBuaJLztD9'
+  return await crypto
+    .createHash('md5')
+    .update(password + salt)
+    .digest('hex')
+})
 // routes
 app.register(autoload, {
   dir: path.join(__dirname, 'routes')
