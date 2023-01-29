@@ -3,12 +3,14 @@
 Environments: 
 
 ```
-PGRST_ENDPOINT=http://localhost:3000
-PGRST_TOKEN=xxx.xxx.xxx
+R7_LOGIN_DB_HOST=localhost
+R7_LOGIN_DB_PORT=5433
+R7_LOGIN_DB_NAME=xxxxx
+R7_LOGIN_DB_SCHEMA=xxxx
+R7_LOGIN_DB_USER=xxxx
+R7_LOGIN_DB_PASSWORD=xxxxxx
 
-SECRET_KEY=xxxxxx
-
-DB_DEBUG=Y
+R7_LOGIN_SECRET_KEY=xxxxxxxxx
 
 NODE_ENV=development
 ```
@@ -16,6 +18,13 @@ NODE_ENV=development
 # Run
 
 ```
+NODE_ENV=development \
+R7_LOGIN_DB_HOST=localhost \
+R7_LOGIN_DB_NAME=xxxxx \
+R7_LOGIN_DB_SCHEMA=xxxx \
+R7_LOGIN_DB_USER=xxxx \
+R7_LOGIN_DB_PASSWORD=xxxxxx \
+R7_LOGIN_SECRET_KEY=xxxxxxxxx \
 npm start
 ```
 
@@ -23,27 +32,4 @@ npm start
 
 ```
 npm run build
-```
-
-# Grant database permission
-
-```sql
-create role authenticator noinherit login password 'xxxxxx';
-
-create role myname nologin;
-grant myname to authenticator;
-grant usage on schema public to myname;
-grant all on public.users to myname;
-```
-
-# Create JWT
-
-```json
-{
-  "sub": "1234567890",
-  "name": "John Doe",
-  "iat": 1516239022,
-  "exp": 1674217011,
-  "role": "myname"
-}
 ```

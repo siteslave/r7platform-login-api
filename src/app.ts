@@ -1,8 +1,6 @@
 import fastify from 'fastify'
-import path, { join } from 'path';
+import path from 'path';
 const autoload = require('@fastify/autoload')
-
-require('dotenv').config({ path: join(__dirname, '../config.conf') })
 
 const app = fastify({
   logger: {
