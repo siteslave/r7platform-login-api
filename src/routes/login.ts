@@ -4,7 +4,6 @@ import {
   getReasonPhrase,
 } from 'http-status-codes'
 
-const bcrypt = require('bcrypt')
 const randomstring = require('randomstring')
 
 import { LoginModel } from '../models/login'
@@ -34,13 +33,9 @@ export default async (fastify: FastifyInstance) => {
     const password = body.password;
 
     try {
-      const data: any = await loginModel.login(db, username);
-
-      const hash: any = data.password;
-
-      const isOk: any = bcrypt.compareSync(password, hash);
-
-      if (isOk) {
+      const hash: any = await fastify.hashPassword(password)
+      const data: any = await loginModel.login(db, username, hash)
+      if (data) {
         const payload: any = { sub: data.id, ingress_zone: data.ingress_zone, hospcode: data.hospcode }
         const access_token = fastify.jwt.sign(payload)
         const refresh_token = randomstring.generate(64)
@@ -80,10 +75,11 @@ export default async (fastify: FastifyInstance) => {
     }
   }, async (_request: FastifyRequest, reply: FastifyReply) => {
     try {
-      const password: any = randomstring.generate(8);
-      const hash = bcrypt.hashSync(password, 10);
+      const password: any = randomstring.generate(8)
+      const hash: any = await fastify.hashPassword(password)
       reply.status(StatusCodes.OK).send({ password, hash })
     } catch (e) {
+      console.error(e)
       reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send()
     }
   })
