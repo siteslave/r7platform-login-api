@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import {
   StatusCodes,
   getReasonPhrase,
@@ -28,9 +28,8 @@ export default async (fastify: FastifyInstance) => {
     },
     schema: loginSchema,
   }, async (request: FastifyRequest, reply: FastifyReply) => {
-    const body: any = request.body;
-    const username = body.username;
-    const password = body.password;
+    const body: any = request.body
+    const { username, password } = body
 
     try {
       const hash: any = await fastify.hashPassword(password)
@@ -56,13 +55,13 @@ export default async (fastify: FastifyInstance) => {
       }
 
     } catch (error: any) {
-      request.log.error(error);
+      request.log.error(error)
       reply
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .send({
           code: StatusCodes.INTERNAL_SERVER_ERROR,
           error: getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR)
-        });
+        })
     }
   })
 
