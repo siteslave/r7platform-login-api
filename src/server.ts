@@ -14,7 +14,9 @@ const start = async () => {
       }
     }
 
-    app.listen({ port: 3021 }, (err, address) => {
+    const port = process.env.R7_LOGIN_PORT ? Number(process.env.R7_LOGIN_PORT) : 3000
+
+    app.listen({ port }, (err, address) => {
       if (err) {
         console.error(err);
         process.exit(1);

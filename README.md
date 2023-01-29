@@ -10,6 +10,7 @@ R7_LOGIN_DB_SCHEMA=xxxx
 R7_LOGIN_DB_USER=xxxx
 R7_LOGIN_DB_PASSWORD=xxxxxx
 
+R7_LOGIN_PORT=3021
 R7_LOGIN_SECRET_KEY=xxxxxxxxx
 
 NODE_ENV=development
@@ -25,6 +26,7 @@ R7_LOGIN_DB_SCHEMA=xxxx \
 R7_LOGIN_DB_USER=xxxx \
 R7_LOGIN_DB_PASSWORD=xxxxxx \
 R7_LOGIN_SECRET_KEY=xxxxxxxxx \
+R7_LOGIN_PORT=3021 \
 npm start
 ```
 
