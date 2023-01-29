@@ -2,7 +2,7 @@ FROM node:18-alpine AS build
 
 LABEL maintainer="Satit Rianpit <rianpit@gmail.com>"
 
-WORKDIR /home/api
+WORKDIR /app
 
 RUN apk update && \
   apk upgrade && \
@@ -37,9 +37,8 @@ FROM keymetrics/pm2:18-slim
 
 ENV NODE_ENV === 'production'
 
-COPY --from=build /home/api /home/api
+COPY --from=build /app /app
 
 EXPOSE 3000
 
-# CMD ["node", "/home/api/dist/server.js"]
-CMD ["pm2-runtime", "--json", "/home/api/process.json"]
+CMD ["pm2-runtime", "--json", "/app/process.json"]
