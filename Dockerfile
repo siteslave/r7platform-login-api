@@ -20,7 +20,7 @@ RUN apk update && \
 
 COPY . .
 
-RUN npm i && \ && npm run build
+RUN npm i && npm run build
 
 RUN apk del make gcc g++ python
 
