@@ -1,9 +1,9 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import {
   StatusCodes,
   getReasonPhrase,
 } from 'http-status-codes'
-import _ from "lodash";
+import _ from "lodash"
 
 import { TokenModel } from '../models/token'
 
@@ -29,7 +29,7 @@ export default async (fastify: FastifyInstance) => {
     const refreshToken = body.refresh_token;
 
     try {
-      const data: any = await tokenModel.verifyToken(db, refreshToken);
+      const data: any = await tokenModel.verifyToken(db, refreshToken)
 
       if (!_.isEmpty(data)) {
         const payload: any = { sub: data.user_id, ingress_zone: data.ingress_zone, hospcode: data.hospcode }

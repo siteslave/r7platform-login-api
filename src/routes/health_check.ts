@@ -1,5 +1,5 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { StatusCodes } from "http-status-codes";
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
+import { StatusCodes } from "http-status-codes"
 
 export default async (fastify: FastifyInstance) => {
 
