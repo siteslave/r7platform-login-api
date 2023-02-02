@@ -3,7 +3,6 @@ import path from 'path'
 const autoload = require('@fastify/autoload')
 const crypto = require('crypto')
 
-
 const app = fastify({
   logger: {
     transport:
@@ -76,6 +75,7 @@ app.decorate('hashPassword', async (password: any) => {
     .update(password + salt)
     .digest('hex')
 })
+
 // routes
 app.register(autoload, {
   dir: path.join(__dirname, 'routes')
