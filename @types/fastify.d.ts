@@ -7,7 +7,8 @@ declare module 'fastify' {
     jwt: jsonwebtoken
     authenticate: any
     db: Knex
-    hashPassword: any
+    hashPassword(password): Promise<string>
+    verifyPassword(password, hash): Promise<boolean>
   }
 
   interface FastifyRequest {
