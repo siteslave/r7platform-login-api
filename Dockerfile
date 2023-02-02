@@ -20,6 +20,8 @@ RUN apk update && \
 
 COPY . .
 
+RUN npm i -g @mapbox/node-pre-gyp
+
 RUN npm i && npm rebuild bcrypt && npm run build
 
 RUN apk del make gcc g++ python3
