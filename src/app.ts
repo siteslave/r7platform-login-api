@@ -1,8 +1,7 @@
 import fastify from 'fastify'
 import path from 'path'
 const autoload = require('@fastify/autoload')
-const crypto = require('crypto')
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt')
 
 const app = fastify({
   logger: {
