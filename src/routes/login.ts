@@ -32,19 +32,32 @@ export default async (fastify: FastifyInstance) => {
     const { username, password } = body
 
     try {
-      const hash: any = await fastify.hashPassword(password)
-      const data: any = await loginModel.login(db, username, hash)
+      const data: any = await loginModel.login(db, username)
       if (data) {
-        const payload: any = { sub: data.id, ingress_zone: data.ingress_zone, hospcode: data.hospcode }
-        const access_token = fastify.jwt.sign(payload)
-        const refresh_token = randomstring.generate(64)
 
-        // save token
-        await tokenModel.saveToken(db, data, refresh_token)
+        //verify
+        const match = await fastify.verifyPassword(password, data.password)
+        if (match) {
+          const payload: any = { sub: data.id, ingress_zone: data.ingress_zone, hospcode: data.hospcode }
+          const access_token = fastify.jwt.sign(payload)
+          const refresh_token = randomstring.generate(64)
 
-        reply
-          .status(StatusCodes.OK)
-          .send({ access_token, refresh_token })
+          // save token
+          await tokenModel.saveToken(db, data, refresh_token)
+
+          reply
+            .status(StatusCodes.OK)
+            .send({ access_token, refresh_token })
+        } else {
+          reply
+            .status(StatusCodes.UNAUTHORIZED)
+            .send({
+              code: StatusCodes.UNAUTHORIZED,
+              error: getReasonPhrase(StatusCodes.UNAUTHORIZED),
+              message: 'Password not match'
+            })
+        }
+
       } else {
         reply
           .status(StatusCodes.UNAUTHORIZED)
@@ -65,16 +78,17 @@ export default async (fastify: FastifyInstance) => {
     }
   })
 
-  fastify.get('/genpass', {
+  fastify.post('/genpass', {
     config: {
       rateLimit: {
         max: 10,
         timeWindow: '1 minute'
       }
     }
-  }, async (_request: FastifyRequest, reply: FastifyReply) => {
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
-      const password: any = randomstring.generate(8)
+      const body: any = request.body
+      const { password } = body
       const hash: any = await fastify.hashPassword(password)
       reply.status(StatusCodes.OK).send({ password, hash })
     } catch (e) {

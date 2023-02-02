@@ -18,11 +18,11 @@ RUN apk update && \
   cp /usr/share/zoneinfo/Asia/Bangkok /etc/localtime && \
   echo "Asia/Bangkok" > /etc/timezone
 
-RUN wget -qO /bin/pnpm "https://github.com/pnpm/pnpm/releases/latest/download/pnpm-linuxstatic-x64" && chmod +x /bin/pnpm
-
 COPY . .
 
-RUN pnpm i && pnpm run build
+RUN npm i -g @mapbox/node-pre-gyp
+
+RUN npm i && npm rebuild bcrypt && npm run build
 
 RUN apk del make gcc g++ python3
 
