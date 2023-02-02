@@ -48,7 +48,7 @@ export default async (fastify: FastifyInstance) => {
       }
 
     } catch (error: any) {
-      request.log.error(error);
+      request.log.error(error)
       reply
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .send({

@@ -10,10 +10,11 @@ export default async (fastify: FastifyInstance) => {
         timeWindow: '1 minute'
       }
     }
-  }, async (_request: FastifyRequest, reply: FastifyReply) => {
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       reply.status(StatusCodes.OK).send()
-    } catch (e) {
+    } catch (error: any) {
+      request.log.error(error)
       reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send()
     }
   })
