@@ -12,7 +12,7 @@ import { TokenModel } from '../models/token'
 import loginSchema from '../schema/login'
 
 
-export default async (fastify: FastifyInstance) => {
+export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
   const loginModel = new LoginModel()
   const tokenModel = new TokenModel()
@@ -20,12 +20,6 @@ export default async (fastify: FastifyInstance) => {
   const db = fastify.db
 
   fastify.post('/login', {
-    config: {
-      rateLimit: {
-        max: 10,
-        timeWindow: '1 minute'
-      }
-    },
     schema: loginSchema,
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     const body: any = request.body
@@ -78,14 +72,7 @@ export default async (fastify: FastifyInstance) => {
     }
   })
 
-  fastify.post('/genpass', {
-    config: {
-      rateLimit: {
-        max: 10,
-        timeWindow: '1 minute'
-      }
-    }
-  }, async (request: FastifyRequest, reply: FastifyReply) => {
+  fastify.post('/genpass', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const body: any = request.body
       const { password } = body
@@ -96,5 +83,7 @@ export default async (fastify: FastifyInstance) => {
       reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send()
     }
   })
+
+  done()
 
 } 
