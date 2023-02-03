@@ -1,8 +1,7 @@
 import fastify from 'fastify'
-import path, { join } from 'path';
+import path from 'path'
 const autoload = require('@fastify/autoload')
-
-require('dotenv').config({ path: join(__dirname, '../config.conf') })
+const bcrypt = require('bcrypt')
 
 const app = fastify({
   logger: {
@@ -26,20 +25,34 @@ app.register(require('@fastify/cors'))
 
 // Rate limit
 app.register(import('@fastify/rate-limit'), {
-  global: false,
-  max: 100,
+  global: true,
+  max: 5,
   timeWindow: '1 minute'
 })
 
-// PostgREST
-app.register(require('./plugins/postgrest'), {
-  url: process.env.PGRST_URL,
-  key: process.env.PGRST_KEY
+// Database
+app.register(require('./plugins/db'), {
+  options: {
+    client: 'pg',
+    connection: {
+      host: process.env.R7PLATFORM_LOGIN_DB_HOST || 'localhost',
+      user: process.env.R7PLATFORM_LOGIN_DB_USER || 'postgres',
+      port: Number(process.env.R7PLATFORM_LOGIN_DB_PORT) || 5432,
+      password: process.env.R7PLATFORM_LOGIN_DB_PASSWORD || '',
+      database: process.env.R7PLATFORM_LOGIN_DB_NAME || 'test',
+    },
+    searchPath: [process.env.R7PLATFORM_LOGIN_DB_SCHEMA || 'public'],
+    pool: {
+      min: Number(process.env.R7PLATFORM_LOGIN_DB_POOL_MIN) || 0,
+      max: Number(process.env.R7PLATFORM_LOGIN_DB_POOL_MAX) || 500
+    },
+    debug: process.env.R7PLATFORM_LOGIN_DB_DEBUG === "Y" ? true : false,
+  }
 })
 
 // JWT
 app.register(require('./plugins/jwt'), {
-  secret: process.env.SECRET_KEY || '@1234567890@',
+  secret: process.env.R7PLATFORM_LOGIN_SECRET_KEY || '@1234567890@',
   sign: {
     iss: 'r7.moph.go.th',
     expiresIn: '10m'
@@ -54,9 +67,20 @@ app.register(require('./plugins/jwt'), {
   }
 })
 
+// hash password
+app.decorate('hashPassword', async (password: any) => {
+  const saltRounds = 10
+  return bcrypt.hash(password, saltRounds)
+})
+
+// verify password
+app.decorate('verifyPassword', async (password: any, hash: any) => {
+  return bcrypt.compare(password, hash)
+})
+
 // routes
 app.register(autoload, {
   dir: path.join(__dirname, 'routes')
 })
 
-export default app;
+export default app

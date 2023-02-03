@@ -14,10 +14,12 @@ const start = async () => {
       }
     }
 
-    app.listen({ port: 3000, host: '0.0.0.0' }, (err, address) => {
+    const port = process.env.R7PLATFORM_LOGIN_PORT ? Number(process.env.R7PLATFORM_LOGIN_PORT) : 3000
+
+    app.listen({ port, host: '0.0.0.0' }, (err, _address) => {
       if (err) {
-        console.error(err);
-        process.exit(1);
+        console.error(err)
+        process.exit(1)
       }
     })
 

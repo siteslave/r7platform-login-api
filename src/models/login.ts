@@ -1,15 +1,17 @@
-
+import { Knex } from 'knex'
 export class LoginModel {
 
   constructor () { }
 
-  login(postgrest: any, username: any, password: any) {
-    return postgrest
-      .from('users')
-      .select('id')
-      .eq('username', username)
-      .eq('password', password)
-      .limit(1);
+  async login(db: Knex, username: any) {
+    return db
+      .from('users as u')
+      .innerJoin('hospitals as h', 'h.hospcode', 'u.hospcode')
+      .innerJoin('zones as z', 'z.code', 'h.zone_code')
+      .select('u.id', 'u.password', 'z.ingress_zone', 'h.hospcode')
+      .where('u.username', username)
+      .where('u.enabled', true)
+      .first()
   }
 
 }

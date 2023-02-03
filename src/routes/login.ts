@@ -1,61 +1,89 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import {
   StatusCodes,
   getReasonPhrase,
-} from 'http-status-codes';
+} from 'http-status-codes'
 
-import * as crypto from 'crypto'
+const randomstring = require('randomstring')
 
 import { LoginModel } from '../models/login'
+import { TokenModel } from '../models/token'
 
-export default async (fastify: FastifyInstance) => {
+import loginSchema from '../schema/login'
 
-  const loginModel = new LoginModel();
-  const postgrest = fastify.postgrest;
+
+export default async (fastify: FastifyInstance, _options: any, done: any) => {
+
+  const loginModel = new LoginModel()
+  const tokenModel = new TokenModel()
+
+  const db = fastify.db
 
   fastify.post('/login', {
-    config: {
-      rateLimit: {
-        max: 10,
-        timeWindow: '1 minute'
-      }
-    }
+    schema: loginSchema,
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     const body: any = request.body
-    const username = body.username
-    const password = body.password
+    const { username, password } = body
 
     try {
-      const encPassword = crypto.createHash('md5').update(password).digest('hex')
-      const { data, error } = await loginModel.login(postgrest, username, encPassword)
+      const data: any = await loginModel.login(db, username)
+      if (data) {
 
-      if (error) {
-        reply
-          .status(StatusCodes.BAD_REQUEST)
-          .send(getReasonPhrase(StatusCodes.BAD_REQUEST))
-      }
+        //verify
+        const match = await fastify.verifyPassword(password, data.password)
+        if (match) {
+          const payload: any = { sub: data.id, ingress_zone: data.ingress_zone, hospcode: data.hospcode }
+          const access_token = fastify.jwt.sign(payload)
+          const refresh_token = randomstring.generate(64)
 
-      if (data.length > 0) {
-        const user: any = data[0]
-        const payload: any = {
-          sub: user.id
+          // save token
+          await tokenModel.saveToken(db, data, refresh_token)
+
+          reply
+            .status(StatusCodes.OK)
+            .send({ access_token, refresh_token })
+        } else {
+          reply
+            .status(StatusCodes.UNAUTHORIZED)
+            .send({
+              code: StatusCodes.UNAUTHORIZED,
+              error: getReasonPhrase(StatusCodes.UNAUTHORIZED),
+              message: 'Password not match'
+            })
         }
 
-        const token = fastify.jwt.sign(payload)
-        reply
-          .status(StatusCodes.OK)
-          .send({ access_token: token })
       } else {
         reply
           .status(StatusCodes.UNAUTHORIZED)
-          .send(getReasonPhrase(StatusCodes.UNAUTHORIZED))
+          .send({
+            code: StatusCodes.UNAUTHORIZED,
+            error: getReasonPhrase(StatusCodes.UNAUTHORIZED)
+          })
       }
+
     } catch (error: any) {
-      request.log.error(error);
+      request.log.error(error)
       reply
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .send(getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR))
+        .send({
+          code: StatusCodes.INTERNAL_SERVER_ERROR,
+          error: getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR)
+        })
     }
   })
+
+  fastify.post('/genpass', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const body: any = request.body
+      const { password } = body
+      const hash: any = await fastify.hashPassword(password)
+      reply.status(StatusCodes.OK).send({ password, hash })
+    } catch (e) {
+      console.error(e)
+      reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send()
+    }
+  })
+
+  done()
 
 } 
