@@ -55,7 +55,7 @@ app.register(require('./plugins/jwt'), {
   secret: process.env.R7PLATFORM_LOGIN_SECRET_KEY || '@1234567890@',
   sign: {
     iss: 'r7.moph.go.th',
-    expiresIn: '10m'
+    expiresIn: '1h'
   },
   messages: {
     badRequestErrorMessage: 'Format is Authorization: Bearer [token]',
