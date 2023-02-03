@@ -15,7 +15,7 @@ COPY . .
 
 RUN npm i && npm rebuild bcrypt && npm run build
 
-RUN rm -rf node_modules && npm i --omit=dev
+RUN rm -rf src node_modules && npm i --omit=dev
 
 RUN npm rebuild bcrypt
 
