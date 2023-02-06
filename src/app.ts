@@ -67,6 +67,16 @@ app.register(require('./plugins/jwt'), {
   }
 })
 
+app.addHook('onSend', (_request: any, reply: any, _playload: any, done: any) => {
+  reply.headers({
+    'X-Powered-By': 'R7 Health Platform System',
+    'X-Processed-By': process.env.R7PLATFORM_LOGIN_HOSTNAME || 'dummy-server',
+  })
+
+  done()
+
+})
+
 // hash password
 app.decorate('hashPassword', async (password: any) => {
   const saltRounds = 10
