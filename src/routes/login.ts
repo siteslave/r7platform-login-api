@@ -10,6 +10,7 @@ import { LoginModel } from '../models/login'
 import { TokenModel } from '../models/token'
 
 import loginSchema from '../schema/login'
+import genpassSchema from '../schema/genpass'
 
 
 export default async (fastify: FastifyInstance, _options: any, done: any) => {
@@ -72,7 +73,9 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
     }
   })
 
-  fastify.post('/genpass', async (request: FastifyRequest, reply: FastifyReply) => {
+  fastify.post('/genpass', {
+    schema: genpassSchema
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const body: any = request.body
       const { password } = body
