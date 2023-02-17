@@ -6,7 +6,7 @@ export class PlatformModel {
 
   list(db: Knex, userId: any) {
     return db('user_platforms as u')
-      .select('u.*', 'p.platform_name', 'p.id as platform_id')
+      .select('u.id', 'u.name', 'u.api_key', 'u.created_at', 'u.updated_at', 'u.platform_id', 'p.platform_name', 'p.id as platform_id', 'p.login_endpoint', 'p.refresh_endpoint')
       .innerJoin('platforms as p', 'p.id', 'u.platform_id')
       .where({ 'u.user_id': userId })
   }
