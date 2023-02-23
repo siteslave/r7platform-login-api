@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes"
 
 export default async (fastify: FastifyInstance, _options: any, done: any) => {
 
-  fastify.get('/health-check', async (request: FastifyRequest, reply: FastifyReply) => {
+  fastify.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       reply.status(StatusCodes.OK)
         .send({ status: 'success' })
