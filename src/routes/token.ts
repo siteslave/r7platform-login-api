@@ -8,6 +8,7 @@ import _ from "lodash"
 import { TokenModel } from '../models/token'
 
 import tokenSchema from '../schema/token'
+import introspectSchema from '../schema/introspect'
 
 
 export default async (fastify: FastifyInstance) => {
@@ -55,6 +56,31 @@ export default async (fastify: FastifyInstance) => {
           code: StatusCodes.INTERNAL_SERVER_ERROR,
           error: getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR)
         });
+    }
+  })
+
+  fastify.post('/introspect', {
+    config: {
+      rateLimit: {
+        max: 100,
+        timeWindow: '1 minute'
+      }
+    },
+    schema: introspectSchema,
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const decoded: any = await request.sendJwtVerify();
+      reply
+        .status(StatusCodes.OK)
+        .send(decoded);
+    } catch (error: any) {
+      request.log.error(error)
+      reply
+        .status(StatusCodes.UNAUTHORIZED)
+        .send({
+          code: StatusCodes.UNAUTHORIZED,
+          error: getReasonPhrase(StatusCodes.UNAUTHORIZED)
+        })
     }
   })
 
