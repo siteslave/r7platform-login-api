@@ -1,6 +1,4 @@
 import fastify from 'fastify'
-import path from 'path'
-const autoload = require('@fastify/autoload')
 const bcrypt = require('bcrypt')
 
 const app = fastify({
