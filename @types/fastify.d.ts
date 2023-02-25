@@ -4,7 +4,6 @@ import Knex from 'knex'
 
 declare module 'fastify' {
   interface FastifyInstance {
-    jwt: jsonwebtoken
     authenticate: any
     db: Knex
     hashPassword(password): Promise<string>
@@ -12,7 +11,14 @@ declare module 'fastify' {
   }
 
   interface FastifyRequest {
-    jwtVerify: any
+    loginJwtVerify: any
+    sendJwtVerify: any
+    user: any
+  }
+
+  interface FastifyReply {
+    loginJwtSign: any
+    sendJwtSign: any
     user: any
   }
 

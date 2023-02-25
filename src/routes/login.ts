@@ -34,7 +34,56 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
         const match = await fastify.verifyPassword(password, data.password)
         if (match) {
           const payload: any = { sub: data.id, ingress_zone: data.ingress_zone, hospcode: data.hospcode }
-          const access_token = fastify.jwt.sign(payload)
+          const access_token = await reply.loginJwtSign(payload)
+          reply
+            .status(StatusCodes.OK)
+            .send({ access_token })
+        } else {
+          reply
+            .status(StatusCodes.UNAUTHORIZED)
+            .send({
+              code: StatusCodes.UNAUTHORIZED,
+              error: getReasonPhrase(StatusCodes.UNAUTHORIZED),
+              message: 'Password not match'
+            })
+        }
+
+      } else {
+        reply
+          .status(StatusCodes.UNAUTHORIZED)
+          .send({
+            code: StatusCodes.UNAUTHORIZED,
+            error: getReasonPhrase(StatusCodes.UNAUTHORIZED)
+          })
+      }
+
+    } catch (error: any) {
+      request.log.error(error)
+      reply
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .send({
+          code: StatusCodes.INTERNAL_SERVER_ERROR,
+          error: getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR)
+        })
+    }
+  })
+
+  fastify.post('/request', {
+    schema: loginSchema,
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const body: any = request.body
+    const { username, password } = body
+
+    try {
+      const data: any = await loginModel.login(db, username)
+      if (data) {
+
+        //verify
+        const match = await fastify.verifyPassword(password, data.password)
+        if (match) {
+          const payload: any = { sub: data.id, ingress_zone: data.ingress_zone, hospcode: data.hospcode }
+
+          const access_token = await reply.sendJwtSign(payload)
           const refresh_token = randomstring.generate(64)
 
           // save token

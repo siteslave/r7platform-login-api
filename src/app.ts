@@ -50,11 +50,32 @@ app.register(require('./plugins/db'), {
   }
 })
 
-// JWT
+// JWT for Login
 app.register(require('./plugins/jwt'), {
-  secret: process.env.R7PLATFORM_LOGIN_SECRET_KEY || '@1234567890@',
+  namespace: 'login',
+  name: 'authenticate',
+  secret: process.env.R7PLATFORM_LOGIN_SECRET_KEY,
   sign: {
-    iss: 'r7.moph.go.th',
+    iss: 'r7platform.moph.go.th',
+    expiresIn: '1h'
+  },
+  messages: {
+    badRequestErrorMessage: 'Format is Authorization: Bearer [token]',
+    noAuthorizationInHeaderMessage: 'Autorization header is missing!',
+    authorizationTokenExpiredMessage: 'Authorization token expired',
+    authorizationTokenInvalid: (err: any) => {
+      return `Authorization token is invalid: ${err.message}`
+    }
+  }
+})
+
+// JWT for Send data
+app.register(require('./plugins/jwt'), {
+  namespace: 'send',
+  name: 'sendauth',
+  secret: process.env.R7PLATFORM_LOGIN_SEND_SECRET_KEY,
+  sign: {
+    iss: 'r7platform-send.moph.go.th',
     expiresIn: '1h'
   },
   messages: {
@@ -90,6 +111,7 @@ app.decorate('verifyPassword', async (password: any, hash: any) => {
 
 // routes
 app.register(require("./routes/login"), { prefix: '/' })
+app.register(require("./routes/health_check"), { prefix: '/health-check' })
 app.register(require("./routes/user_platform"), { prefix: '/user-platforms' })
 
 export default app
