@@ -33,7 +33,7 @@ export default async (fastify: FastifyInstance) => {
 
       if (!_.isEmpty(data)) {
         const payload: any = { sub: data.user_id, ingress_zone: data.ingress_zone, hospcode: data.hospcode }
-        const access_token = fastify.jwt.sign(payload)
+        const access_token = await reply.sendJwtSign(payload)
 
         reply
           .status(StatusCodes.OK)
