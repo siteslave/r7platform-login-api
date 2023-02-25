@@ -4,9 +4,9 @@ import fp from 'fastify-plugin'
 module.exports = fp(async (fastify: any, opts: any) => {
   fastify.register(require("@fastify/jwt"), opts)
 
-  fastify.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
+  fastify.decorate(opts.name, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
-      await request.jwtVerify()
+      await request.loginJwtVerify()
     } catch (err) {
       reply.status(401).send(err)
     }
