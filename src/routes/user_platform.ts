@@ -24,9 +24,10 @@ export default async (fastify: FastifyInstance) => {
         timeWindow: '1 minute'
       }
     },
-    onRequest: [fastify.authenticate],
+    onRequest: (request) => request.loginJwtVerify(),
   }, async (request: FastifyRequest, reply: FastifyReply) => {
-    const user_id = request.user.sub
+    const decoded = await request.loginJwtVerify();
+    const user_id = decoded.sub
     try {
       const results: any = await platformModel.list(db, user_id)
 
@@ -52,13 +53,15 @@ export default async (fastify: FastifyInstance) => {
         timeWindow: '1 minute'
       }
     },
-    onRequest: [fastify.authenticate],
+    onRequest: (request) => request.loginJwtVerify(),
     schema: createSchema,
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     const body: any = request.body
     const { name, api_key, platform_id } = body
 
-    const user_id = request.user.sub
+    const decoded = await request.loginJwtVerify();
+
+    const user_id = decoded.sub
     const platform: ICreateUserPlatform = {
       api_key, name, platform_id, user_id
     }
@@ -87,7 +90,7 @@ export default async (fastify: FastifyInstance) => {
         timeWindow: '1 minute'
       }
     },
-    onRequest: [fastify.authenticate],
+    onRequest: (request) => request.loginJwtVerify(),
     schema: updateSchema,
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     const body: any = request.body

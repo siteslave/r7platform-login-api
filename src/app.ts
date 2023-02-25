@@ -1,6 +1,4 @@
 import fastify from 'fastify'
-import path from 'path'
-const autoload = require('@fastify/autoload')
 const bcrypt = require('bcrypt')
 
 const app = fastify({
@@ -51,28 +49,30 @@ app.register(require('./plugins/db'), {
 })
 
 // JWT for Login
-app.register(require('./plugins/jwt'), {
-  namespace: 'login',
-  name: 'authenticate',
-  secret: process.env.R7PLATFORM_LOGIN_SECRET_KEY,
-  sign: {
-    iss: 'r7platform.moph.go.th',
-    expiresIn: '1h'
-  },
-  messages: {
-    badRequestErrorMessage: 'Format is Authorization: Bearer [token]',
-    noAuthorizationInHeaderMessage: 'Autorization header is missing!',
-    authorizationTokenExpiredMessage: 'Authorization token expired',
-    authorizationTokenInvalid: (err: any) => {
-      return `Authorization token is invalid: ${err.message}`
+app.register(require("@fastify/jwt"),
+  {
+    namespace: 'login',
+    decoratorName: 'authenticate',
+    secret: process.env.R7PLATFORM_LOGIN_SECRET_KEY,
+    sign: {
+      iss: 'r7platform.moph.go.th',
+      expiresIn: '1h'
+    },
+    messages: {
+      badRequestErrorMessage: 'Format is Authorization: Bearer [token]',
+      noAuthorizationInHeaderMessage: 'Autorization header is missing!',
+      authorizationTokenExpiredMessage: 'Authorization token expired',
+      authorizationTokenInvalid: (err: any) => {
+        return `Authorization token is invalid: ${err.message}`
+      }
     }
-  }
-})
+
+  });
 
 // JWT for Send data
-app.register(require('./plugins/jwt'), {
+app.register(require("@fastify/jwt"), {
   namespace: 'send',
-  name: 'sendauth',
+  decoratorName: 'sendauth',
   secret: process.env.R7PLATFORM_LOGIN_SEND_SECRET_KEY,
   sign: {
     iss: 'r7platform-send.moph.go.th',
@@ -111,6 +111,7 @@ app.decorate('verifyPassword', async (password: any, hash: any) => {
 
 // routes
 app.register(require("./routes/login"), { prefix: '/' })
+app.register(require("./routes/token"), { prefix: '/token' })
 app.register(require("./routes/health_check"), { prefix: '/health-check' })
 app.register(require("./routes/user_platform"), { prefix: '/user-platforms' })
 
