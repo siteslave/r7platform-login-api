@@ -24,7 +24,7 @@ app.register(require('@fastify/cors'))
 // Rate limit
 app.register(import('@fastify/rate-limit'), {
   global: true,
-  max: 5,
+  max: 100,
   timeWindow: '1 minute'
 })
 
