@@ -62,7 +62,7 @@ export default async (fastify: FastifyInstance) => {
   fastify.post('/introspect', {
     config: {
       rateLimit: {
-        max: 100,
+        max: 1500,
         timeWindow: '1 minute'
       }
     },
