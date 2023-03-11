@@ -24,7 +24,7 @@ app.register(require('@fastify/cors'))
 // Rate limit
 app.register(import('@fastify/rate-limit'), {
   global: true,
-  max: 5,
+  max: 100,
   timeWindow: '1 minute'
 })
 
@@ -42,7 +42,7 @@ app.register(require('./plugins/db'), {
     searchPath: [process.env.R7PLATFORM_LOGIN_DB_SCHEMA || 'public'],
     pool: {
       min: Number(process.env.R7PLATFORM_LOGIN_DB_POOL_MIN) || 0,
-      max: Number(process.env.R7PLATFORM_LOGIN_DB_POOL_MAX) || 500
+      max: Number(process.env.R7PLATFORM_LOGIN_DB_POOL_MAX) || 10
     },
     debug: process.env.R7PLATFORM_LOGIN_DB_DEBUG === "Y" ? true : false,
   }
