@@ -14,4 +14,10 @@ export class LoginModel {
       .first()
   }
 
+  async updateLastLogin(db: Knex, username: any) {
+    return db('users')
+      .where('username', username)
+      .update('last_login', db.raw('now()'))
+  }
+
 }

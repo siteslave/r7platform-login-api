@@ -35,6 +35,9 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
         if (match) {
           const payload: any = { sub: data.id, ingress_zone: data.ingress_zone, hospcode: data.hospcode }
           const access_token = await reply.loginJwtSign(payload)
+          // update last login
+          await loginModel.updateLastLogin(db, username);
+
           reply
             .status(StatusCodes.OK)
             .send({ access_token })
