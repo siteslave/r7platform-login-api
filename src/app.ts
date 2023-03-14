@@ -112,7 +112,7 @@ app.decorate('verifyPassword', async (password: any, hash: any) => {
 // routes
 app.register(require("./routes/login"), { prefix: '/' })
 app.register(require("./routes/token"), { prefix: '/token' })
+app.register(require("./routes/info"), { prefix: '/info' })
 app.register(require("./routes/health_check"), { prefix: '/health-check' })
-app.register(require("./routes/user_platform"), { prefix: '/user-platforms' })
 
 export default app
