@@ -11,8 +11,6 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
     try {
 
       const decoded: any = await request.loginJwtVerify();
-      console.log(decoded);
-
       const userId: any = decoded.sub;
 
       if (userId) {

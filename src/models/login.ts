@@ -8,7 +8,7 @@ export class LoginModel {
       .from('users as u')
       .innerJoin('hospitals as h', 'h.hospcode', 'u.hospcode')
       .innerJoin('zones as z', 'z.code', 'h.zone_code')
-      .select('u.id', 'u.password', 'z.ingress_zone', 'h.hospcode')
+      .select('u.id', 'u.password', 'z.ingress_zone', 'h.hospcode', 'h.hospname')
       .where('u.username', username)
       .where('u.enabled', true)
       .first()
