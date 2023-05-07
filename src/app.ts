@@ -31,9 +31,12 @@ const redis = new Redis({
   host: process.env.R7PLATFORM_LOGIN_REDIS_RATELIMIT_HOST || 'localhost',
   port: Number(process.env.R7PLATFORM_LOGIN_REDIS_RATELIMIT_PORT) || 6379,
   password: process.env.R7PLATFORM_LOGIN_REDIS_RATELIMIT_PASSWORD || '',
+  connectTimeout: 500,
+  maxRetriesPerRequest: 1
 })
 app.register(import('@fastify/rate-limit'), {
   global: true,
+  nameSpace: 'r7platform-login-ratelimit-',
   max: 1000,
   timeWindow: '1h',
   ban: 3,
