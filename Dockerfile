@@ -1,4 +1,4 @@
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 LABEL maintainer="Satit Rianpit <rianpit@gmail.com>"
 
@@ -16,7 +16,7 @@ RUN rm -rf src @types demo scripts node_modules && \
   npm i --omit=dev && \
   npm rebuild bcrypt
 
-FROM node:18-alpine
+FROM node:20-alpine
 
 COPY --from=builder /app /app
 

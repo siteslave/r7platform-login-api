@@ -19,13 +19,28 @@ const app = fastify({
 
 // Plugins
 app.register(require('@fastify/formbody'))
-app.register(require('@fastify/cors'))
+app.register(require('@fastify/cors'), {
+  origin: 'https://r7.moph.go.th',
+  methods: ['GET', 'POST'],
+})
 
 // Rate limit
+const Redis = require('ioredis')
+const redis = new Redis({
+  connectionName: 'login-redis',
+  host: process.env.R7PLATFORM_LOGIN_REDIS_RATELIMIT_HOST || 'localhost',
+  port: Number(process.env.R7PLATFORM_LOGIN_REDIS_RATELIMIT_PORT) || 6379,
+  password: process.env.R7PLATFORM_LOGIN_REDIS_RATELIMIT_PASSWORD || '',
+})
 app.register(import('@fastify/rate-limit'), {
   global: true,
-  max: 100,
-  timeWindow: '1 minute'
+  max: 1000,
+  timeWindow: '1h',
+  ban: 3,
+  keyGenerator: (request: any) => {
+    return request.headers['x-real-ip'];
+  },
+  redis: redis
 })
 
 // Database

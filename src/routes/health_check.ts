@@ -8,7 +8,7 @@ export default async (fastify: FastifyInstance, _options: any, done: any) => {
       reply.status(StatusCodes.OK)
         .send({
           status: 'ok',
-          version: '1.0.0',
+          version: '1.0.1',
           name: process.env.R7PLATFORM_LOGIN_HOSTNAME || 'default-server'
         })
     } catch (error: any) {

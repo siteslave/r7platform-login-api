@@ -18,12 +18,6 @@ export default async (fastify: FastifyInstance) => {
   const db = fastify.db
 
   fastify.post('/refresh_token', {
-    config: {
-      rateLimit: {
-        max: 10,
-        timeWindow: '1 minute'
-      }
-    },
     schema: tokenSchema,
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     const body: any = request.body;
@@ -60,12 +54,6 @@ export default async (fastify: FastifyInstance) => {
   })
 
   fastify.post('/introspect', {
-    config: {
-      rateLimit: {
-        max: 1500,
-        timeWindow: '1 minute'
-      }
-    },
     schema: introspectSchema,
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
